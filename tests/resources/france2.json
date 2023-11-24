@@ -1,0 +1,34 @@
+{
+  "mapId": "france2",
+  "bounds": [
+    [42, -5],
+    [51, 10]
+  ],
+  "layers": [
+    {
+      "name": "main",
+      "markers": [
+        {
+          "point": [45.73, 4.84],
+          "description": "Lyon",
+          "color": "blue"
+        },
+        {
+          "point": [47.22, -1.54],
+          "description": "Nantes",
+          "color": "blue"
+        }
+      ]
+    },
+    {
+      "name": "second",
+      "markers": [
+        {
+          "point": [48.86, 2.35],
+          "description": "Paris",
+          "color": "red"
+        }
+      ]
+    }
+  ]
+}

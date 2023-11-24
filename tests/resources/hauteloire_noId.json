@@ -1,0 +1,23 @@
+{
+  "bounds": [
+    [44.71, 3.11],
+    [45.4, 4.5]
+  ],
+  "layers": [
+    {
+      "name": "main",
+      "markers": [
+        {
+          "point": [45.04134, 3.8799],
+          "description": "Logipro",
+          "color": "green"
+        },
+        {
+          "point": [45.04308, 3.88361],
+          "description": "Mairie du Puy en Velay",
+          "color": "green"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+doctrine:
+  dbal:
+    url: "%env(resolve:DATABASE_URL)%"
+    types:
+      map_id: Datamaps\Infrastructure\Persistence\Doctrine\Types\MapIdType
+      rectangle: Datamaps\Infrastructure\Persistence\Doctrine\Types\RectangleType
+      layers: Datamaps\Infrastructure\Persistence\Doctrine\Types\LayersType
+  orm:
+    auto_generate_proxy_classes: true
+    naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+    auto_mapping: true
+    mappings:
+      Datamaps:
+        is_bundle: false
+        type: xml
+        dir: "%kernel.project_dir%/src/Infrastructure/Persistence/Doctrine/Mapping"
+        prefix: 'Datamaps\Domain\Model'

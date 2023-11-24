@@ -1,0 +1,61 @@
+{
+  "$id": "http://api.example.com/profile.json",
+  "title": "Test if it is a map",
+  "type": "object",
+  "properties": {
+    "mapId": {
+      "type": "string",
+      "minLength": 5
+    },
+    "bounds": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 2,
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "markers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "point": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "description": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string",
+                  "enum": ["red", "green", "blue"]
+                }
+              },
+              "required": ["point", "description", "color"]
+            }
+          }
+        },
+        "required": ["name", "markers"]
+      }
+    }
+  },
+  "required": ["bounds"]
+}

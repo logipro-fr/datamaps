@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="https://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+
+
+    <entity name="Datamaps\Domain\Model\Map\Map" table="maps"
+            repository-class="Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine">
+        <id name="mapId" type="map_id" column="map_id">
+            <generator strategy="NONE"/>
+        </id>
+        <field name="bounds" type="rectangle" column="rectangle"/>
+        <field name="createdAt" type="datetime_immutable" column="created_at"/>
+        <field name="layers" type="layers" column="layers"/>
+    </entity>
+</doctrine-mapping>
