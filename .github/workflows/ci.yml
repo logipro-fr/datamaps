@@ -28,11 +28,11 @@ jobs:
 
     # PHPCS Check
     - name: Check coding standards
-      run: ./vendor/bin/phpcs
+      run: ./vendor/bin/phpcs --standard=PSR12 ./src ./tests
 
     # PHPStan Check
-    - name: Perform static analysis
-      run: ./vendor/bin/phpstan analyse
+    - name: Perform static analysis on source code
+      run: ./vendor/bin/phpstan analyseanalyse --level=9 ./src ./tests
 
     # PHPUnit Test
     - name: Run PHPUnit tests
