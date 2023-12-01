@@ -11,11 +11,7 @@ class DoctrineFacadeTest extends TestCase
 {
     protected function setUp(): void
     {
-        $filename = getcwd() . '/var/sqlite-unit-test.db';
-        if (file_exists($filename)) {
-            unlink($filename);
-        }
-        EntityManagerSingleton::instance('sqlite:///var/sqlite-unit-test.db')->resetEntityManager();
+        EntityManagerSingleton::instance('sqlite:///:memory:?cache=shared')->resetEntityManager();
     }
 
     public function testGetEntityManager(): void

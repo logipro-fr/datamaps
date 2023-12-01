@@ -13,7 +13,7 @@ class EntityManagerSingletonTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->databaseUrl = 'sqlite:///var/sqlite-unit-test.db';
+        $this->databaseUrl = 'sqlite:///:memory:?cache=shared';
     }
 
     public function testGetEntityManagerSingleton(): void
