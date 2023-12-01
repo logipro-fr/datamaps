@@ -32,7 +32,7 @@ jobs:
 
     # PHPStan Check
     - name: Perform static analysis on source code
-      run: ./vendor/bin/phpstan analyseanalyse --level=9 ./src ./tests
+      run: ./vendor/bin/phpstan analyse --level=9 ./src ./tests
 
     # PHPUnit Test
     - name: Run PHPUnit tests
