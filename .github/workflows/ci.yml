@@ -44,9 +44,21 @@ jobs:
     - name: Run PHPUnit tests
       run: ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
+    # Check and Display Coverage Percentage
+    - name: Check and display coverage percentage
+      run: |
+        coverage=$(grep 'Lines:' coverage.txt | awk '{print $2}')
+        echo "Code coverage is $coverage"
+        coverageValue=$(echo $coverage | sed 's/%//')
+        if [ $(echo "$coverageValue < 100" | bc) -eq 1 ]; then
+          echo "Code coverage is below 100%"
+          exit 1
+        fi
+
     # Publish Test Coverage Results
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
         file: build/logs/clover.xml
         fail_ci_if_error: true
+
