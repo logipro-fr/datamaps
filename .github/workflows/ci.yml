@@ -61,13 +61,4 @@ jobs:
       with:
         file: build/logs/clover.xml
         fail_ci_if_error: true
-
-    # Upload Test Report as an Artifact
-    - name: Upload test report
-      uses: actions/upload-artifact@v2
-      with:
-        name: test-report
-        path: |
-          build/logs/clover.xml
-          coverage.txt
-          coverage-html/
+        flags: unittests
