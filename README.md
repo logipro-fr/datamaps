@@ -5,7 +5,7 @@ DataMaps is a microservice specialized in displaying data on maps.
 # Install
 
 ```console
-git clone git@gitlab.logipro.com:accidentologie/datamaps.git
+git clone git@github.com:logipro-fr/datamaps.git
 ```
 
 # To Contribute to Datamaps
@@ -29,7 +29,7 @@ Using Test-Driven Development (TDD) principles (thanks to Kent Beck and others),
 ```console
 ./start
 ```
-have a local look at http://127.0.0.1:33080/ in your navigator
+have a local look at http://127.0.0.1:11080/ in your navigator
 
 ```console
 ./stop

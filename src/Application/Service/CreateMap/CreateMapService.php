@@ -11,7 +11,7 @@ use function Safe\json_decode;
 
 class CreateMapService extends AbstractService
 {
-    private const INITIAL_PATH = "/api/display/";
+    private const INITIAL_PATH = "/api/v1/display/";
 
     /** @param CreateMapRequest $req */
     public function execute(RequestInterface $req): void

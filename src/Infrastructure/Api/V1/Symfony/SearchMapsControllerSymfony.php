@@ -17,7 +17,7 @@ class SearchMapsControllerSymfony
     ) {
     }
 
-    #[Route('/api/search/{amount}', "search_maps", methods: ['GET'])]
+    #[Route('/api/v1/search/{amount}', "search_maps", methods: ['GET'])]
     public function searchMaps(int $amount): Response
     {
         $controller = $this->getController();

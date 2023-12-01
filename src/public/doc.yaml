@@ -5,18 +5,10 @@ info:
   description: >-
     Documentation for Datamaps API.
 
-
     Datamaps is a service of Logipro company.
-servers:
-  - url: https://accidentprediction.fr/datamaps
-    description: Production en attente de changement de domaine
-  - url: http://localhost:33080
-    description: tests locaux sans reverse
-  - url: https://localhost/datamaps
-    description: tests locaux avec reverse
 
 paths:
-  /api/display/{mapId}:
+  /api/v1/display/{mapId}:
     get:
       tags:
         - Maps
@@ -60,7 +52,7 @@ paths:
                   message:
                     example: "Map with mapId 'france' not found."
 
-  /api/search/{amount}:
+  /api/v1/search/{amount}:
     get:
       tags:
         - Maps
@@ -105,7 +97,7 @@ paths:
                     example: 422
                   message:
                     example: "Can't retrieve data from an empty repository"
-  /api/create:
+  /api/v1/create:
     post:
       tags:
         - Maps
@@ -153,7 +145,7 @@ paths:
                         example: france
                       url:
                         type: string
-                        example: /api/display/france
+                        example: /api/v1/display/france
                   error_code:
                     example: 200
                   message:

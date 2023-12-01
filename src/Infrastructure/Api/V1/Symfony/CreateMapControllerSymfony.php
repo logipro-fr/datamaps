@@ -19,7 +19,7 @@ class CreateMapControllerSymfony
     ) {
     }
 
-    #[Route('/api/create', "create_map", methods: ['POST'])]
+    #[Route('/api/v1/create', "create_map", methods: ['POST'])]
     public function createMap(Request $req): Response
     {
         $controller = $this->getController();

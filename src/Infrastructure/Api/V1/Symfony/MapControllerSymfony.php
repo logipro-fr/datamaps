@@ -17,7 +17,7 @@ class MapControllerSymfony
     ) {
     }
 
-    #[Route('/api/display/{mapId}', "display_map", methods: ['GET'])]
+    #[Route('/api/v1/display/{mapId}', "display_map", methods: ['GET'])]
     public function displayMap(string $mapId): Response
     {
         $controller = $this->getController();

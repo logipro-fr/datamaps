@@ -12,7 +12,7 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - "$PWD/..:/var/datamaps"
     ports:
-      - "33080:80"
+      - "127.0.0.1:10180:80"
     networks:
       - datamaps-network
 
@@ -54,18 +54,18 @@ services:
       - datamaps-network
 
   datamaps-swagger-ui:
-    image: swaggerapi/swagger-ui:v5.9.0
+    image: swaggerapi/swagger-ui:v5.10.3
     container_name: "datamaps-swagger-ui"
     restart: always
     environment:
       PORT_IPV6: 8080
       SUPPORTED_SUBMIT_METHODS: "['get', 'post', 'put', 'delete', 'patch']"
       URLS: "[ \
-        { url: 'http://localhost:33080/doc.php', name: 'Datamaps localhost' }, \
-        { url: 'http://accidentprediction.fr:33080/doc.php', name: 'Datamaps dev 33080' }, \
-        { url: 'https://datamaps.turbolead.com/doc.php', name: 'Datamaps Turbolead' }, \
-        { url: 'https://accidentprediction.fr/datamaps/doc.php', name: 'Datamaps dev' } \
+        { url: 'http://127.0.0.1:10180/doc.php', name: 'Datamaps localhost' }, \
+        { url: 'https://datamaps.logipro.fr/doc.php', name: 'Datamaps Logipro' }
         ]"
+    ports:
+      - "127.0.0.1:10102:8080"
     networks:
       - datamaps-network
 
@@ -77,6 +77,8 @@ services:
       PMA_HOST: datamaps-mariadb
     depends_on:
       - datamaps-mariadb
+    ports:
+      - "127.0.0.1:10190:80"
     networks:
       - datamaps-network
 

@@ -33,7 +33,7 @@ class CreateMapServiceTest extends AbstractServiceTestCase
 
         $response = $this->getDataFromSuccessfulResponse();
         $this->assertEquals("test_create_service", $response->mapId);
-        $this->assertEquals("/api/display/test_create_service", $response->displayUrl);
+        $this->assertEquals("/api/v1/display/test_create_service", $response->displayUrl);
     }
 
     private function toJson(Map $map): string
