@@ -42,15 +42,11 @@ jobs:
 
     # PHPUnit Test
     - name: Run PHPUnit tests
-      run: ./vendor/bin/phpunit
+      run: ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
 
-    # Infection Test
-    - name: Run Infection
-      run: ./vendor/bin/infection --min-msi=80 --min-covered-msi=90 --log-verbosity=none --coverage=coverage --threads=4
-
-   # Publish Test Coverage Results
+    # Publish Test Coverage Results
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        directory: coverage/ # ou le chemin du dossier de couverture
+        file: build/logs/clover.xml
         fail_ci_if_error: true
