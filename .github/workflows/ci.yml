@@ -42,7 +42,7 @@ jobs:
 
     # PHPUnit Test
     - name: Run PHPUnit tests
-      run: ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
+      run: ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --coverage-text=coverage.txt --coverage-html=coverage-html
 
     # Check and Display Coverage Percentage
     - name: Check and display coverage percentage
@@ -62,3 +62,12 @@ jobs:
         file: build/logs/clover.xml
         fail_ci_if_error: true
 
+    # Upload Test Report as an Artifact
+    - name: Upload test report
+      uses: actions/upload-artifact@v2
+      with:
+        name: test-report
+        path: |
+          build/logs/clover.xml
+          coverage.txt
+          coverage-html/
