@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManager;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+use function Safe\putenv;
+
 class EntityManagerSingletonTest extends TestCase
 {
     protected string $databaseUrl;
@@ -59,12 +61,80 @@ class EntityManagerSingletonTest extends TestCase
             $d_env = null;
         }
 
-        $_ENV['DATABASE_URL'] = getenv('DATABASE_URL');
+        $_ENV['DATABASE_URL'] = "MY_CUSTOM_PATH";
         $this->assertTrue(isset($_ENV['DATABASE_URL']));
 
-        $em = EntityManagerSingleton::instance()->getEntityManager();
-        $this->assertInstanceOf(EntityManager::class, $em);
+        $dbUrl = EntityManagerSingleton::getDatabaseUrlWithEnv();
+        $this->assertEquals("MY_CUSTOM_PATH", $dbUrl);
 
+        if ($d_env == null) {
+            unset($_ENV['DATABASE_URL']);
+        } else {
+            $_ENV['DATABASE_URL'] = $d_env;
+        }
+    }
+
+    public function testGetDatabaseUrlFromgetenv(): void
+    {
+        if (isset($_ENV['DATABASE_URL'])) {
+            $d_env = $_ENV['DATABASE_URL'];
+        } else {
+            $d_env = null;
+        }
+        if (is_string(getenv('DATABASE_URL'))) {
+            $env = getenv('DATABASE_URL');
+        } else {
+            $env = null;
+        }
+
+        unset($_ENV['DATABASE_URL']);
+        $this->assertFalse(isset($_ENV['DATABASE_URL']));
+        putenv('DATABASE_URL=' . "MY_CUSTOM_PATH");
+        $this->assertTrue(is_string(getenv('DATABASE_URL')));
+
+        $dbUrl = EntityManagerSingleton::getDatabaseUrlWithEnv();
+        $this->assertEquals("MY_CUSTOM_PATH", $dbUrl);
+
+
+        if ($env == null) {
+            putenv('DATABASE_URL');
+        } else {
+            putenv('DATABASE_URL=' . $env);
+        }
+        if ($d_env == null) {
+            unset($_ENV['DATABASE_URL']);
+        } else {
+            $_ENV['DATABASE_URL'] = $d_env;
+        }
+    }
+
+    public function testGetEmptyDatabaseUrl(): void
+    {
+        if (isset($_ENV['DATABASE_URL'])) {
+            $d_env = $_ENV['DATABASE_URL'];
+        } else {
+            $d_env = null;
+        }
+        if (is_string(getenv('DATABASE_URL'))) {
+            $env = getenv('DATABASE_URL');
+        } else {
+            $env = null;
+        }
+
+        unset($_ENV['DATABASE_URL']);
+        $this->assertFalse(isset($_ENV['DATABASE_URL']));
+        putenv('DATABASE_URL');
+        $this->assertFalse(is_string(getenv('DATABASE_URL')));
+
+        $dbUrl = EntityManagerSingleton::getDatabaseUrlWithEnv();
+        $this->assertEquals("", $dbUrl);
+
+
+        if ($env == null) {
+            putenv('DATABASE_URL');
+        } else {
+            putenv('DATABASE_URL=' . $env);
+        }
         if ($d_env == null) {
             unset($_ENV['DATABASE_URL']);
         } else {

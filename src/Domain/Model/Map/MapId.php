@@ -22,7 +22,7 @@ class MapId
     private function uniqid(): string
     {
         $id = bin2hex(random_bytes(
-            (int)((self::MAX_SIZE - strlen(self::PREFIX_NAME)) / self::BYTE_PER_CHAR)
+            intval((self::MAX_SIZE - strlen(self::PREFIX_NAME)) / self::BYTE_PER_CHAR)
         ));
         return self::PREFIX_NAME . $id;
     }
