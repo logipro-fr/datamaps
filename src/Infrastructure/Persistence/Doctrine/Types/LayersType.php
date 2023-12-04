@@ -13,6 +13,7 @@ use function Safe\gzinflate;
 class LayersType extends Type
 {
     public const TYPE_NAME = 'layers';
+    public const COMPRESSION_LEVEL = 1;
 
     public function getName(): string
     {
@@ -25,7 +26,7 @@ class LayersType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform): mixed
     {
-        return gzdeflate(serialize($value), 1);
+        return gzdeflate(serialize($value), self::COMPRESSION_LEVEL);
     }
 
     /**
