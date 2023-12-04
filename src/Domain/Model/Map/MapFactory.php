@@ -9,6 +9,7 @@ class MapFactory
         $object = (object) array(
             "mapId" => $map->getMapId()->getId(),
             "bounds" => $map->getBoundsCoords(),
+            "createdAt" => $map->getCreationDate(),
             "layers" => self::createObjectsFromLayers($map->getLayers())
         );
 
