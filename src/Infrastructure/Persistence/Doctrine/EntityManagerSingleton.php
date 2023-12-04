@@ -15,6 +15,8 @@ class EntityManagerSingleton
 
     private const DATABASE_URL = 'DATABASE_URL';
 
+    private const IS_DEV_MODE = true;
+
     private EntityManager $em;
     private static ?EntityManagerSingleton $ems = null;
 
@@ -33,12 +35,15 @@ class EntityManagerSingleton
         return self::$ems;
     }
 
-    private static function getDatabaseUrlWithEnv(): string
+    public static function getDatabaseUrlWithEnv(): string
     {
         if (isset($_ENV[self::DATABASE_URL])) {
             return $_ENV[self::DATABASE_URL];
         }
-        return is_string(getenv(self::DATABASE_URL)) ? getenv(self::DATABASE_URL) : "";
+        if (is_string(getenv(self::DATABASE_URL))) {
+            return getenv(self::DATABASE_URL);
+        }
+        return "";
     }
 
     public function getEntityManager(): EntityManager
@@ -65,7 +70,7 @@ class EntityManagerSingleton
     private function createConfigWithXmlDriver(): Configuration
     {
         $driver = $this->createSimplifiedXmlDriver();
-        $config = ORMSetup::createConfiguration(true);
+        $config = ORMSetup::createConfiguration(self::IS_DEV_MODE);
 
         $config->setMetadataDriverImpl($driver);
 
