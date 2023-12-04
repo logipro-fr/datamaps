@@ -62,7 +62,8 @@ services:
       SUPPORTED_SUBMIT_METHODS: "['get', 'post', 'put', 'delete', 'patch']"
       URLS: "[ \
         { url: 'http://127.0.0.1:10180/doc.php', name: 'Datamaps localhost' }, \
-        { url: 'https://datamaps.logipro.fr/doc.php', name: 'Datamaps Logipro' }
+        { url: 'https://datamaps.logipro.fr/doc.php', name: 'Datamaps Logipro' }, \
+        { url: 'https://accidentprediction.fr/datamaps/doc.php', name: 'Datamaps accidentprediction' } \
         ]"
     ports:
       - "127.0.0.1:10102:8080"
