@@ -20,7 +20,6 @@ class MapService extends AbstractService
     private function getResponseData(Map $map): \stdClass
     {
         $mapObject = MapFactory::createObjectFromMap($map);
-        $mapObject->createdAt = $map->getCreationDate();
         return $mapObject;
     }
 }

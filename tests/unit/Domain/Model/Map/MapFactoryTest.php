@@ -109,6 +109,8 @@ class MapFactoryTest extends TestCase
         $object = MapFactory::createObjectFromMap($map);
         $this->assertEquals("my_custom_map", $object->mapId);
         $this->assertEquals([[1, 2], [3, 4]], $object->bounds);
+        $this->assertEquals($map->getCreationDate(), $object->createdAt);
+
         $layers = $object->layers;
         $this->assertEquals("my_custom_layer", $layers[0]->name);
         $markers = $layers[0]->markers;
