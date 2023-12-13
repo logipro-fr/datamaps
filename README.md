@@ -58,3 +58,5 @@ Check infection with:
 bin/infection
 ```
 and view 'var/infection.html' with your browser
+
+## CLONE TO Gitlab
