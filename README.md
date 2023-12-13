@@ -59,4 +59,4 @@ bin/infection
 ```
 and view 'var/infection.html' with your browser
 
-## CLONE TO Gitlab
+## CLONE TO Gitlab écrase version modifiée sur gitlab
