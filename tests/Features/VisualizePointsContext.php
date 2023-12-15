@@ -9,8 +9,6 @@ use Datamaps\Application\Presenter\PresenterJson;
 use Datamaps\Application\Service\DisplayMap\MapRequest;
 use Datamaps\Application\Service\DisplayMap\MapService;
 use Datamaps\Domain\Model\Map\Color;
-use Datamaps\Domain\Model\Map\Layer;
-use Datamaps\Domain\Model\Map\Map;
 use Datamaps\Domain\Model\Map\MapId;
 use Datamaps\Domain\Model\Map\MapRepositoryInterface;
 use Datamaps\Domain\Model\Map\Marker;
@@ -18,18 +16,13 @@ use Datamaps\Domain\Model\Map\Point;
 use Datamaps\Domain\Model\Map\Rectangle;
 use Datamaps\Infrastructure\Api\V1\Map\Controller;
 use Datamaps\Infrastructure\Persistence\Map\MapRepositoryInMemory;
+use Datamaps\Tests\Domain\Model\Map\Builders\LayerBuilder;
 use Datamaps\Tests\Domain\Model\Map\Builders\MapBuilder;
 use Datamaps\Tests\Domain\Model\Map\Builders\MarkerBuilder;
 use PHPUnit\Framework\Assert;
 
 class VisualizePointsContext implements Context
 {
-    /** @var array<Map> $mapsWithoutLayerBuffer */
-    private array $mapsWithoutLayerBuffer = [];
-
-    /** @var array<Layer> $layersWithoutMapBuffer */
-    private array $layersWithoutMapBuffer = [];
-
     private MapRepositoryInterface $mapRepository;
     private PresenterInterface $presenter;
     private Controller $mapController;
@@ -47,90 +40,53 @@ class VisualizePointsContext implements Context
      */
     public function someMapsAreDefinedBy(TableNode $table): void
     {
-        /** @var array{"bottomleftlatitude":float,"bottomleftlongitude":float,"toprightlatitude":float,"toprightlongitude":float,"id":string} $row */
+        /** @var array{"bllatitude":float,"bllongitude":float,"trlatitude":float,"trlongitude":float,"id":string,"markers":string} $row */
         foreach ($table as $row) {
-            $this->mapsWithoutLayerBuffer[$row["id"]] =
+            $markers = $this->getMarkersFromString($row["markers"]);
+            $this->mapRepository->add(
                 MapBuilder::aMap()
-                    ->withBoundsAs(
-                        new Rectangle(
-                            new Point(
-                                $row["bottomleftlatitude"],
-                                $row["bottomleftlongitude"]
-                            ),
-                            new Point(
-                                $row["toprightlatitude"],
-                                $row["toprightlongitude"]
-                            )
-                        )
-                    )->withId(new MapId($row["id"]))
-                    ->build();
+                    ->withBoundsAs($this->getRectangleFromRow($row))
+                    ->withId(new MapId($row["id"]))
+                    ->withLayer(LayerBuilder::aLayer()
+                        ->withMarkers($markers)
+                        ->build())
+                    ->build()
+            );
         }
-
-        $this->tryLinkBuffers();
     }
 
     /**
-     * @Given markers to display are located at :
+     * @param array{"bllatitude":float,"bllongitude":float,"trlatitude":float,"trlongitude":float} $row
      */
-    public function markersToDisplayAreLocatedAt(TableNode $table): void
+    private function getRectangleFromRow(array $row): Rectangle
     {
-        $markers = $this->putMarkersInArray($table);
-        $this->addMarkersToMapLayer($markers);
-
-        $this->tryLinkBuffers();
+        return new Rectangle(
+            new Point(
+                $row["bllatitude"],
+                $row["bllongitude"]
+            ),
+            new Point(
+                $row["trlatitude"],
+                $row["trlongitude"]
+            )
+        );
     }
 
-    /** @return array<array<Marker>> */
-    private function putMarkersInArray(TableNode $table): array
+    /** @return array<Marker> */
+    private function getMarkersFromString(string $markersString): array
     {
         $markers = [];
-        /** @var array{"latitude":float,"longitude":float,"description":string,"color":string,"mapid":string} $row */
-        foreach ($table as $row) {
-            $marker = $this->getMarker($row["latitude"], $row["longitude"], $row["description"], $row["color"]);
-            $markers[$row["mapid"]][] = $marker;
-        }
-        return $markers;
-    }
-
-    private function getMarker(float $lat, float $lng, string $desc, string $color): Marker
-    {
-        return MarkerBuilder::aMarker()
-                ->withPoint(new Point($lat, $lng))
-                ->withDescription($desc)
-                ->withColor(Color::from($color))
+        $eachMarker = explode(" && ", $markersString);
+        foreach ($eachMarker as $marker) {
+            $eachParam = explode(" : ", $marker);
+            $markers[] = MarkerBuilder::aMarker()
+                ->withPoint(new Point(floatval($eachParam[0]), floatval($eachParam[1])))
+                ->withDescription($eachParam[2])
+                ->withColor(Color::from($eachParam[3]))
                 ->build();
-    }
-
-    /** @param array<array<Marker>> $markers */
-    private function addMarkersToMapLayer(array $markers): void
-    {
-        foreach ($markers as $name => $layerMarkers) {
-            $this->layersWithoutMapBuffer[$name] = new Layer($name, $layerMarkers);
         }
-    }
 
-    private function tryLinkBuffers(): void
-    {
-        $buffersAreNotEmpty =
-            sizeof($this->mapsWithoutLayerBuffer) > 0
-            && sizeof($this->layersWithoutMapBuffer) > 0;
-        if ($buffersAreNotEmpty) {
-            $this->addEachLayerToCorrectMap();
-        }
-    }
-
-    private function addEachLayerToCorrectMap(): void
-    {
-        foreach ($this->layersWithoutMapBuffer as $mapid => $layer) {
-            $map = $this->mapsWithoutLayerBuffer[$mapid];
-            $this->mapRepository->add(
-                new Map(
-                    $map->getBounds(),
-                    $map->getMapId(),
-                    [$layer]
-                )
-            );
-        }
+        return $markers;
     }
 
     /**
@@ -141,49 +97,67 @@ class VisualizePointsContext implements Context
         $this->mapController->execute(new MapRequest($mapid));
     }
 
+    public function getResponseData(): \stdClass
+    {
+        $responseJson = $this->presenter->read();
+        Assert::assertIsString($responseJson);
+        $response = json_decode($responseJson);
+        Assert::assertInstanceOf(\stdClass::class, $response);
+        return $response->data;
+    }
+
     /**
      * @Then user can see a map of :mapid
      */
     public function userCanSeeAMapOf(string $mapid): void
     {
-        $mapJson = $this->presenter->read();
-        Assert::assertIsString($mapJson);
-        $map = json_decode($mapJson);
-        Assert::assertInstanceOf(\stdClass::class, $map);
-        Assert::assertTrue($map->success);
+        $map = $this->getResponseData();
 
-        Assert::assertEquals($mapid, $map->data->mapId);
+        Assert::assertEquals($mapid, $map->mapId);
     }
 
     /**
-     * @Then user can see markers on :mapid
+     * @Then user should see :markers
      */
-    public function userCanSeeMarkers(string $mapid): void
+    public function userShouldSee(string $markers): void
     {
-        $mapJson = $this->presenter->read();
-        Assert::assertIsString($mapJson);
-        $map = json_decode($mapJson);
-        Assert::assertInstanceOf(\stdClass::class, $map);
-        Assert::assertEquals(
-            count($this->mapRepository->findById(new MapId($mapid))->getLayers()[0]->getMarkers()),
-            count($map->data->layers[0]->markers)
-        );
+        $map = $this->getResponseData();
+        $expectedMarkers = $this->getMarkersFromString($markers);
 
-        $this->checkEveryMarker($mapid, $map->data->layers[0]->markers);
+        Assert::assertTrue($this->markersArraysAreEqual($expectedMarkers, $map->layers[0]->markers));
     }
 
     /**
-     * @param array<object> $markers
+     * @param array<object{"point":array<float>,"description":string,"color":string}> $markersObj
+     * @param array<Marker> $markers
      */
-    private function checkEveryMarker(string $mapid, array $markers): void
+    private function markersArraysAreEqual(array $markers, array $markersObj): bool
     {
-        foreach ($this->mapRepository->findById(new MapId($mapid))->getLayers()[0]->getMarkers() as $marker) {
-            $stdMarker = (object) array(
-                "point" => $marker->getCoords(),
-                "description" => $marker->getDescription(),
-                "color" => $marker->getColor()->value
-            );
-            Assert::assertContainsEquals($stdMarker, $markers);
+        if (sizeof($markersObj) != sizeof($markers)) {
+            return false;
+        } else {
+            for ($i = 0; $i < sizeof($markersObj); $i++) {
+                if ($this->markersAreEqual($markers[$i], $markersObj[$i]) == false) {
+                    return false;
+                }
+            }
         }
+        return true;
+    }
+
+    /**
+     * @param object{"point":array<float>,"description":string,"color":string} $actualMarker
+     */
+    private function markersAreEqual(Marker $expectedMarker, object $actualMarker): bool
+    {
+        $marker = (object) array(
+            "point" => $expectedMarker->getCoords(),
+            "description" => $expectedMarker->getDescription(),
+            "color" => $expectedMarker->getColor()->value
+        );
+        if ($marker != $actualMarker) {
+            return false;
+        }
+        return true;
     }
 }
