@@ -5,21 +5,18 @@ namespace Datamaps\Tests\Integration\Infrastructure\Persistence\Map;
 use Datamaps\Domain\Model\Map\Map;
 use Datamaps\Domain\Model\Map\MapFactory;
 use Datamaps\Domain\Model\Map\MapId;
-use Datamaps\Infrastructure\Persistence\Doctrine\EntityManagerSingleton;
 use Datamaps\Tests\Infrastructure\Persistence\Map\MapRepositoryTestBase;
-use Datamaps\Tests\Infrastructure\Shared\Symfony\RunCommand;
+use DoctrineTestingTools\DoctrineRepositoryTesterTrait;
 
 class MapRepositoryDoctrineTest extends MapRepositoryTestBase
 {
-    use RunCommand;
+    use DoctrineRepositoryTesterTrait;
 
     protected function initialize(): void
     {
-        $this->runCommand('doctrine:database:drop --force');
-        $this->runCommand('doctrine:database:create');
-
-        EntityManagerSingleton::instance()->resetEntityManager();
-        $this->mapRepository = new MapRepositoryDoctrineFake();
+        $this->initDoctrineTester();
+        $this->clearTables(["maps"]);
+        $this->mapRepository = new MapRepositoryDoctrineFake($this->getEntityManager());
     }
 
     public function testAddBigMapOf400Markers(): void

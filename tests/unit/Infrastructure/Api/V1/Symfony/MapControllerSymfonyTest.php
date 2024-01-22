@@ -2,38 +2,28 @@
 
 namespace Datamaps\Tests\Infrastructure\Api\V1\Symfony;
 
-use Datamaps\Application\Presenter\PresenterJson;
 use Datamaps\Application\Service\DisplayMap\MapService;
-use Datamaps\Infrastructure\Api\V1\Map\Controller;
+use Datamaps\Application\Service\Response;
 use Datamaps\Infrastructure\Api\V1\Symfony\MapControllerSymfony;
-use Datamaps\Infrastructure\Persistence\Map\MapRepositoryInMemory;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Response;
+
+use function Safe\json_encode;
 
 class MapControllerSymfonyTest extends TestCase
 {
-    public function testController(): void
+    public function testExecute(): void
     {
         /** @var MockObject */
-        $controllerBase = $this->createMock(Controller::class);
-        $controllerBase->expects($this->once())->method("execute");
+        $mapService = $this->createMock(MapService::class);
+        $mapService->expects($this->once())->method("execute");
+        $mapService
+            ->method("readResponse")
+            ->willReturn($expectedResponse = json_encode(new Response(true, new \stdClass(), 200, "")));
 
-        /** @var Controller $controllerBase */
-        $controller = new MapControllerSymfonyFake($controllerBase, new MapRepositoryInMemory());
+        /** @var MapService $mapService */
+        $controller = new MapControllerSymfony($mapService);
         $response = $controller->displayMap("map_id");
-        $this->assertInstanceOf(Response::class, $response);
-    }
-
-    public function testGetController(): void
-    {
-        $repository = new MapRepositoryInMemory();
-        $controller = new MapControllerSymfony($repository);
-
-        $presenter = new PresenterJson();
-        $this->assertEquals(
-            new Controller(new MapService($repository, $presenter)),
-            $controller->getController()
-        );
+        $this->assertEquals($expectedResponse, $response->getContent());
     }
 }

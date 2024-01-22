@@ -2,13 +2,16 @@
 
 namespace Datamaps\Tests\Infrastructure\Persistence\Map;
 
-use Datamaps\Infrastructure\Persistence\Doctrine\EntityManagerSingleton;
+use DoctrineTestingTools\DoctrineRepositoryTesterTrait;
 
 class MapRepositoryDoctrineTest extends MapRepositoryTestBase
 {
+    use DoctrineRepositoryTesterTrait;
+
     protected function initialize(): void
     {
-        EntityManagerSingleton::instance('sqlite:///:memory:?cache=shared')->resetEntityManager();
-        $this->mapRepository = new MapRepositoryDoctrineFake();
+        $this->initDoctrineTester();
+        $this->clearTables(["maps"]);
+        $this->mapRepository = new MapRepositoryDoctrineFake($this->getEntityManager());
     }
 }

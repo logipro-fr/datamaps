@@ -27,7 +27,8 @@
         "doctrine/orm": "^2.16",
         "symfony/orm-pack": "^2.4",
         "opis/json-schema": "^2.3",
-        "phariscope/doctrine-testing-tools": "^1.0"
+        "phariscope/doctrine-testing-tools": "^1.0",
+        "symfony/browser-kit": "^7.0"
     },
     "require-dev": {
         "infection/extension-installer": "0.1.2",
