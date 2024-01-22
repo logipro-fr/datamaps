@@ -8,6 +8,7 @@ use Datamaps\Application\Service\CreateMap\CreateMapService;
 use Datamaps\Domain\Model\Map\MapRepositoryInterface;
 use Datamaps\Infrastructure\Api\V1\Map\Controller;
 use Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class CreateMapControllerSymfony
 {
     public function __construct(
-        private MapRepositoryInterface $repository
+        private MapRepositoryInterface $repository,
+        private EntityManagerInterface $entityManager
     ) {
     }
 
@@ -24,9 +26,7 @@ class CreateMapControllerSymfony
     {
         $controller = $this->getController();
         $controller->execute(new CreateMapRequest($req->getContent()));
-        if ($this->repository instanceof MapRepositoryDoctrine) {
-            $this->repository->flush();
-        }
+        $this->entityManager->flush();
 
         /** @var string */
         $response = $controller->readResponse();
