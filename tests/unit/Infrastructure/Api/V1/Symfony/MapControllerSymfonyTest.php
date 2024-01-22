@@ -2,28 +2,32 @@
 
 namespace Datamaps\Tests\Infrastructure\Api\V1\Symfony;
 
-use Datamaps\Application\Service\DisplayMap\MapService;
-use Datamaps\Application\Service\Response;
+use Datamaps\Domain\Model\Map\MapId;
 use Datamaps\Infrastructure\Api\V1\Symfony\MapControllerSymfony;
-use PHPUnit\Framework\MockObject\MockObject;
+use Datamaps\Infrastructure\Persistence\Map\MapRepositoryInMemory;
+use Datamaps\Tests\Domain\Model\Map\Builders\MapBuilder;
 use PHPUnit\Framework\TestCase;
-
-use function Safe\json_encode;
 
 class MapControllerSymfonyTest extends TestCase
 {
     public function testExecute(): void
     {
-        /** @var MockObject */
-        $mapService = $this->createMock(MapService::class);
-        $mapService->expects($this->once())->method("execute");
-        $mapService
-            ->method("readResponse")
-            ->willReturn($expectedResponse = json_encode(new Response(true, new \stdClass(), 200, "")));
+        $repository = new MapRepositoryInMemory();
+        $repository->add(MapBuilder::aMap()->withId(new MapId("map_id"))->build());
 
-        /** @var MapService $mapService */
-        $controller = new MapControllerSymfony($mapService);
+        $controller = new MapControllerSymfony($repository);
         $response = $controller->displayMap("map_id");
-        $this->assertEquals($expectedResponse, $response->getContent());
+        $this->assertNotFalse($response->getContent());
+        $this->assertStringContainsString('"success":true', $response->getContent());
+    }
+
+    public function testExecuteError(): void
+    {
+        $repository = new MapRepositoryInMemory();
+
+        $controller = new MapControllerSymfony($repository);
+        $response = $controller->displayMap("map_id");
+        $this->assertNotFalse($response->getContent());
+        $this->assertStringContainsString('"success":false', $response->getContent());
     }
 }

@@ -5,25 +5,36 @@ namespace Datamaps\Tests\Integration\Infrastructure\Persistence\Map;
 use Datamaps\Domain\Model\Map\Map;
 use Datamaps\Domain\Model\Map\MapFactory;
 use Datamaps\Domain\Model\Map\MapId;
-use Datamaps\Tests\Infrastructure\Persistence\Map\MapRepositoryTestBase;
+use Datamaps\Domain\Model\Map\MapRepositoryInterface;
+use Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine;
 use DoctrineTestingTools\DoctrineRepositoryTesterTrait;
+use PHPUnit\Framework\TestCase;
 
-class MapRepositoryDoctrineTest extends MapRepositoryTestBase
+class MapRepositoryDoctrineTest extends TestCase
 {
     use DoctrineRepositoryTesterTrait;
 
-    protected function initialize(): void
+    private MapRepositoryInterface $mapRepository;
+
+    public function setUp(): void
     {
         $this->initDoctrineTester();
         $this->clearTables(["maps"]);
-        $this->mapRepository = new MapRepositoryDoctrineFake($this->getEntityManager());
+        $this->mapRepository = new MapRepositoryDoctrine($this->getEntityManager());
     }
 
     public function testAddBigMapOf400Markers(): void
     {
         $bigMapExpected = $this->addMapToRepository("map400.json");
+        $this->getEntityManager()->flush();
+        $this->getEntityManager()->detach($bigMapExpected);
+
         $bigMap = $this->mapRepository->findById(new MapId("map400"));
-        $this->assertEquals($bigMapExpected, $bigMap);
+
+        $this->assertTrue($bigMapExpected->getMapId()->equals($bigMap->getMapId()));
+        $this->assertEquals($bigMapExpected->getBounds(), $bigMap->getBounds());
+        $this->assertEquals($bigMapExpected->getLayers(), $bigMap->getLayers());
+        $this->assertEquals($bigMapExpected->getCreationDate(), $bigMap->getCreationDate());
     }
 
     private function addMapToRepository(string $filename): Map

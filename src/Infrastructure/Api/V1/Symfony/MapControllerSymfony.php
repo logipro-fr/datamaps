@@ -13,17 +13,24 @@ use Symfony\Component\Routing\Annotation\Route;
 class MapControllerSymfony
 {
     public function __construct(
-        private MapService $mapService
+        private MapRepositoryInterface $repository
     ) {
     }
 
     #[Route('/api/v1/display/{mapId}', "display_map", methods: ['GET'])]
     public function displayMap(string $mapId): Response
     {
-        $this->mapService->execute(new MapRequest($mapId));
+        $controller = $this->getController();
+        $controller->execute(new MapRequest($mapId));
 
         /** @var string */
-        $response = $this->mapService->readResponse();
+        $response = $controller->readResponse();
         return new Response($response);
+    }
+
+    public function getController(): Controller
+    {
+        $presenter = new PresenterJson();
+        return new Controller(new MapService($this->repository, $presenter));
     }
 }

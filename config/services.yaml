@@ -19,32 +19,6 @@ services:
     autowire: true
     class: Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine
   Datamaps\Domain\Model\Map\MapRepositoryInterface: "@map.repository"
-  
-  presenter:
-    public: true
-    autowire: true
-    class: Datamaps\Application\Presenter\PresenterJson
-  
-  Datamaps\Application\Service\CreateMap\CreateMapService:
-    public: true
-    autowire: true
-    arguments:
-      - "@map.repository"
-      - "@presenter"
-
-  Datamaps\Application\Service\DisplayMap\MapService:
-    public: true
-    autowire: true
-    arguments:
-      - "@map.repository"
-      - "@presenter"
-
-  Datamaps\Application\Service\SearchMaps\SearchMapsService:
-    public: true
-    autowire: true
-    arguments:
-      - "@map.repository"
-      - "@presenter"
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
