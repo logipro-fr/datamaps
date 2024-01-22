@@ -11,7 +11,7 @@ use DoctrineTestingTools\DoctrineRepositoryTesterTrait;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class MapControllerSymfonyTest extends WebTestCase
+class SearchMapsControllerSymfonyTest extends WebTestCase
 {
     use DoctrineRepositoryTesterTrait;
 
@@ -35,13 +35,13 @@ class MapControllerSymfonyTest extends WebTestCase
         $this->entityManager = $em;
     }
 
-    public function testDisplayMapRoute(): void
+    public function testSearchMapsRoute(): void
     {
-        $this->repository->add(MapBuilder::aMap()->withId(new MapId("display_map_integration"))->build());
+        $this->repository->add(MapBuilder::aMap()->withId(new MapId("search_maps_integration"))->build());
         $this->entityManager->flush();
 
-        $response = $this->client->request("GET", "/api/v1/display/display_map_integration");
+        $response = $this->client->request("GET", "/api/v1/search/1");
         $this->assertStringContainsString('"success":true', $response->html());
-        $this->assertStringContainsString('"mapId":"display_map_integration"', $response->html());
+        $this->assertStringContainsString('"mapId":"search_maps_integration"', $response->html());
     }
 }

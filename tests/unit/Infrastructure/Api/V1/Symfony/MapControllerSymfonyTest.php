@@ -18,7 +18,12 @@ class MapControllerSymfonyTest extends TestCase
         $controller = new MapControllerSymfony($repository);
         $response = $controller->displayMap("map_id");
         $this->assertNotFalse($response->getContent());
-        $this->assertStringContainsString('"success":true', $response->getContent());
+
+        /** @var \stdClass $responseObject */
+        $responseObject = json_decode($response->getContent());
+
+        $this->assertTrue($responseObject->success);
+        $this->assertEquals("map_id", $responseObject->data->mapId);
     }
 
     public function testExecuteError(): void
@@ -28,6 +33,10 @@ class MapControllerSymfonyTest extends TestCase
         $controller = new MapControllerSymfony($repository);
         $response = $controller->displayMap("map_id");
         $this->assertNotFalse($response->getContent());
-        $this->assertStringContainsString('"success":false', $response->getContent());
+
+        /** @var \stdClass $responseObject */
+        $responseObject = json_decode($response->getContent());
+
+        $this->assertFalse($responseObject->success);
     }
 }
