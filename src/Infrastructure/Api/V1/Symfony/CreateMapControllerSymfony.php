@@ -33,7 +33,7 @@ class CreateMapControllerSymfony
         return new Response($response);
     }
 
-    public function getController(): Controller
+    private function getController(): Controller
     {
         $presenter = new PresenterJson();
         return new Controller(new CreateMapService($this->repository, $presenter));
