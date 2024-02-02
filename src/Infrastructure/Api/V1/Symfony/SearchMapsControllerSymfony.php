@@ -27,7 +27,7 @@ class SearchMapsControllerSymfony
         return new Response($response);
     }
 
-    public function getController(): Controller
+    private function getController(): Controller
     {
         $presenter = new PresenterJson();
         return new Controller(new SearchMapsService($this->repository, $presenter));

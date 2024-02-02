@@ -1,3 +1,0 @@
-api:
-  resource: ../src/Infrastructure/Api/V1/Symfony/
-  type: annotation

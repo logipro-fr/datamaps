@@ -5,7 +5,7 @@
   backupGlobals="false"
   colors="true"
   bootstrap="tests/bootstrap.php"
-  cacheDirectory=".phpunit.cache">
+  cacheDirectory="var/.phpunit-integration.cache">
   <coverage/>
   <testsuites>
     <testsuite name="all">
@@ -13,6 +13,8 @@
     </testsuite>
   </testsuites>
   <php>
+    <env name="APP_ENV" value="test" force="true"/>
+    <env name="KERNEL_CLASS" value="Datamaps\Infrastructure\Shared\Symfony\Kernel"/>
     <env name="DATABASE_URL" value='mysql://root:logipro@datamaps-mariadb:3306/datamaps?serverVersion=10.9.3-MariaDB&amp;charset=utf8mb4' force="true" />
   </php>
   <source>

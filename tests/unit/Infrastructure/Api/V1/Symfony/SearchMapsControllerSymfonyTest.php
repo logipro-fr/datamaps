@@ -2,38 +2,44 @@
 
 namespace Datamaps\Tests\Infrastructure\Api\V1\Symfony;
 
-use Datamaps\Application\Presenter\PresenterJson;
-use Datamaps\Application\Service\SearchMaps\SearchMapsService;
-use Datamaps\Infrastructure\Api\V1\Map\Controller;
+use Datamaps\Domain\Model\Map\MapId;
 use Datamaps\Infrastructure\Api\V1\Symfony\SearchMapsControllerSymfony;
 use Datamaps\Infrastructure\Persistence\Map\MapRepositoryInMemory;
-use PHPUnit\Framework\MockObject\MockObject;
+use Datamaps\Tests\Domain\Model\Map\Builders\MapBuilder;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Response;
+
+use function Safe\json_decode;
 
 class SearchMapsControllerSymfonyTest extends TestCase
 {
-    public function testController(): void
-    {
-        /** @var MockObject */
-        $controllerBase = $this->createMock(Controller::class);
-        $controllerBase->expects($this->once())->method("execute");
-
-        /** @var Controller $controllerBase */
-        $controller = new SearchMapsControllerSymfonyFake($controllerBase, new MapRepositoryInMemory());
-        $response = $controller->searchMaps(3);
-        $this->assertInstanceOf(Response::class, $response);
-    }
-
-    public function testGetController(): void
+    public function testExecute(): void
     {
         $repository = new MapRepositoryInMemory();
-        $controller = new SearchMapsControllerSymfony($repository);
+        $repository->add(MapBuilder::aMap()->withId(new MapId("map_id_1"))->build());
+        $repository->add(MapBuilder::aMap()->withId(new MapId("map_id_2"))->build());
 
-        $presenter = new PresenterJson();
-        $this->assertEquals(
-            new Controller(new SearchMapsService($repository, $presenter)),
-            $controller->getController()
-        );
+        $controller = new SearchMapsControllerSymfony($repository);
+        $response = $controller->searchMaps(2);
+        $this->assertNotFalse($response->getContent());
+
+        /** @var \stdClass $responseObject */
+        $responseObject = json_decode($response->getContent());
+
+        $this->assertTrue($responseObject->success);
+        $this->assertCount(2, $responseObject->data->maps);
+    }
+
+    public function testExecuteError(): void
+    {
+        $repository = new MapRepositoryInMemory();
+
+        $controller = new SearchMapsControllerSymfony($repository);
+        $response = $controller->searchMaps(1);
+        $this->assertNotFalse($response->getContent());
+
+        /** @var \stdClass $responseObject */
+        $responseObject = json_decode($response->getContent());
+
+        $this->assertFalse($responseObject->success);
     }
 }
