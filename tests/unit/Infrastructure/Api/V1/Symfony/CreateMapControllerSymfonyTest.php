@@ -2,21 +2,14 @@
 
 namespace Datamaps\Tests\Infrastructure\Api\V1\Symfony;
 
-use Datamaps\Application\Presenter\PresenterJson;
-use Datamaps\Application\Service\CreateMap\CreateMapService;
 use Datamaps\Domain\Model\Map\Map;
 use Datamaps\Domain\Model\Map\MapId;
-use Datamaps\Infrastructure\Api\V1\Map\Controller;
 use Datamaps\Infrastructure\Api\V1\Symfony\CreateMapControllerSymfony;
-use Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine;
 use Datamaps\Infrastructure\Persistence\Map\MapRepositoryInMemory;
-use Datamaps\Tests\Domain\Model\Map\Builders\MapBuilder;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Framework\MockObject\Generator\MockClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 use function Safe\json_encode;
 

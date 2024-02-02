@@ -12,6 +12,6 @@ class MapRepositoryDoctrineTest extends MapRepositoryTestBase
     {
         $this->initDoctrineTester();
         $this->clearTables(["maps"]);
-        $this->mapRepository = new MapRepositoryDoctrineFake($this->getEntityManager());
+        $this->mapRepository = new FlushingMapRepositoryDoctrine($this->getEntityManager());
     }
 }
