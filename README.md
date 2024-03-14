@@ -1,6 +1,6 @@
 # DataMaps
 
-DataMaps is a microservice specialized in displaying data on maps.
+DataMaps is a microservice specialized in displaying data on maps .
 
 # Install
 
