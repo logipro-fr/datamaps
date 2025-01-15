@@ -1,5 +1,25 @@
 #!/bin/bash
 
-cd docker
-docker compose down
-cd ..
+source install-lib/load-env.sh
+
+function init_docker_userid_groupid() {
+    USERID=$(id -u)
+    export USERID
+    GROUPID=$(id -g)
+    export GROUPID
+}
+
+function stop_docker_compose() {
+    cd docker
+    USERID=$(id -u)
+    export USERID
+    GROUPID=$(id -g)
+    export GROUPID
+
+    docker compose down
+    cd ..
+}
+
+init_docker_userid_groupid
+load_env
+stop_docker_compose

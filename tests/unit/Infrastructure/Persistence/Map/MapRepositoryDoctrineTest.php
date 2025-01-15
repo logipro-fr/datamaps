@@ -5,11 +5,11 @@ namespace Datamaps\Tests\Infrastructure\Persistence\Map;
 use Datamaps\Infrastructure\Persistence\Map\MapRepositoryDoctrine;
 use DoctrineTestingTools\DoctrineRepositoryTesterTrait;
 
-class MapRepositoryDoctrineTest extends MapRepositoryTestBase
+class MapRepositoryDoctrineTest extends MapRepositoryInMemoryTest
 {
     use DoctrineRepositoryTesterTrait;
 
-    protected function initialize(): void
+    protected function setUp(): void
     {
         $this->initDoctrineTester();
         $this->clearTables(["maps"]);
