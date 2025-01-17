@@ -42,8 +42,10 @@ class SearchMapsContext implements Context
     {
         /** @var array{"id":string,"creation_time":string} $row */
         foreach ($table as $row) {
-            $date = DateTimeImmutable::createFromFormat(self::DATE_PATTERN, $row["creation_time"]);
-            $date = $date == false ? new DateTimeImmutable() : $date;
+            // error due to improper safePHP return tagging. It is not, in fact, always true.
+            // @phpstan-ignore ternary.alwaysTrue
+            $date = DateTimeImmutable::createFromFormat(self::DATE_PATTERN, $row["creation_time"]) ?:
+                new DateTimeImmutable();
 
             $this->mapRepository->add(
                 new Map(
