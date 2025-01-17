@@ -111,6 +111,7 @@ class MapFactoryTest extends TestCase
         $this->assertEquals([[1, 2], [3, 4]], $object->bounds);
         $this->assertEquals($map->getCreationDate(), $object->createdAt);
 
+        /** @var array<object{name:string,markers:array<object{name:string,point:array<int>,description:string,color:string}>}> */
         $layers = $object->layers;
         $this->assertEquals("my_custom_layer", $layers[0]->name);
         $markers = $layers[0]->markers;

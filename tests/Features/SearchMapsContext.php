@@ -70,6 +70,7 @@ class SearchMapsContext implements Context
      */
     public function userReceivesIt(): void
     {
+        /** @var mixed&object{data:object{maps:array<object{mapId:string}>}} $mapsResponse */
         $mapsResponse = $this->presenter->read();
         Assert::assertInstanceOf(\stdClass::class, $mapsResponse);
         $maps = $mapsResponse->data->maps;
@@ -94,6 +95,7 @@ class SearchMapsContext implements Context
      */
     public function userReceivesMapsInCreationOrder(int $amount): void
     {
+        /** @var mixed&object{data:object{maps:array<object{mapId:string}>}} $mapsResponse */
         $mapsResponse = $this->presenter->read();
         Assert::assertInstanceOf(\stdClass::class, $mapsResponse);
         $maps = $mapsResponse->data->maps;

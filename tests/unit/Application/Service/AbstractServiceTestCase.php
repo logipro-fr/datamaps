@@ -25,6 +25,7 @@ abstract class AbstractServiceTestCase extends TestCase
 
     protected function getDataFromSuccessfulResponse(): \stdClass
     {
+        /** @var mixed&object{data:\stdClass} $response */
         $response = $this->service->readResponse();
         $this->assertInstanceOf(\stdClass::class, $response);
 

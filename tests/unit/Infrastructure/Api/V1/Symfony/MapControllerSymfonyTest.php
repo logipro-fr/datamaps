@@ -19,7 +19,7 @@ class MapControllerSymfonyTest extends TestCase
         $response = $controller->displayMap("map_id");
         $this->assertNotFalse($response->getContent());
 
-        /** @var \stdClass $responseObject */
+        /** @var object{success:bool,data:object{mapId:string}} $responseObject */
         $responseObject = json_decode($response->getContent());
 
         $this->assertTrue($responseObject->success);
