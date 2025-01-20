@@ -49,14 +49,15 @@ class CreateMapContext implements Context
      */
     public function theMapIsCreatedAccordingTo(string $filename): void
     {
+        /** @var mixed&object{mapId:string} $mapData */
         $mapData = json_decode(file_get_contents("./tests/resources/" . $filename));
         Assert::assertInstanceOf(\stdClass::class, $mapData);
-
 
         $presenter = new PresenterJson();
         $mapController = new Controller(new MapService($this->mapRepository, $presenter));
         $mapController->execute(new MapRequest($mapData->mapId));
 
+        /** @var mixed&object{data:\stdClass}&mixed $mapResponse */
         $mapResponse = json_decode($presenter->read());
         Assert::assertInstanceOf(\stdClass::class, $mapResponse);
         Assert::assertTrue(
@@ -72,6 +73,7 @@ class CreateMapContext implements Context
     {
         $createdJson = $this->presenter->read();
         Assert::assertIsString($createdJson);
+        /** @var mixed&object{data:object{mapId:string}}&mixed $createMapResponse */
         $createMapResponse = json_decode($createdJson);
         Assert::assertInstanceOf(\stdClass::class, $createMapResponse);
         Assert::assertEquals($expectedid, $createMapResponse->data->mapId);

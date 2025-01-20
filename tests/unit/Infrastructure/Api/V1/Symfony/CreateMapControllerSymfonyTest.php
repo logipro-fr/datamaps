@@ -42,7 +42,7 @@ class CreateMapControllerSymfonyTest extends TestCase
         $response = $controller->createMap($request);
         $this->assertNotFalse($response->getContent());
 
-        /** @var \stdClass $responseObject */
+        /** @var object{success:bool,data:object{mapId:string}} $responseObject */
         $responseObject = json_decode($response->getContent());
 
         $this->assertTrue($responseObject->success);

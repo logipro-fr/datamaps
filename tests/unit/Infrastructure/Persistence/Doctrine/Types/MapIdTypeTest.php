@@ -18,7 +18,7 @@ class MapIdTypeTest extends TestCase
     {
         $type = new MapIdType();
         $id = $type->convertToPHPValue("map_", new SqlitePlatform());
-        $this->assertEquals(true, $id instanceof MapId);
+        $this->assertEquals(new MapId("map_"), $id);
     }
 
     public function testConvertToDatabaseValue(): void

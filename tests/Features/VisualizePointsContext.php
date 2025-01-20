@@ -101,6 +101,7 @@ class VisualizePointsContext implements Context
     {
         $responseJson = $this->presenter->read();
         Assert::assertIsString($responseJson);
+        /** @var mixed&object{data:\stdClass} $response */
         $response = json_decode($responseJson);
         Assert::assertInstanceOf(\stdClass::class, $response);
         return $response->data;
@@ -121,6 +122,7 @@ class VisualizePointsContext implements Context
      */
     public function userShouldSee(string $markers): void
     {
+        /** @var object{layers:array<object{markers:array<object{point:array<float>,description:string,color:string}>}>}&\stdClass $map */
         $map = $this->getResponseData();
         $expectedMarkers = $this->getMarkersFromString($markers);
 

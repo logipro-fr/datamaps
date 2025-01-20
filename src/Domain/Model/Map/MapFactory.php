@@ -59,20 +59,22 @@ class MapFactory
 
     private static function createMapFromFormat(MapFormat $mapObject): Map
     {
+        /** @var array<object{name:string,markers:array<\stdClass>}> $layers */
+        $layers = $mapObject->layers;
         $map = new Map(
             new Rectangle(
                 new Point($mapObject->bounds[0][0], $mapObject->bounds[0][1]),
                 new Point($mapObject->bounds[1][0], $mapObject->bounds[1][1])
             ),
             new MapId($mapObject->mapId),
-            self::createLayersFromFormat($mapObject->layers)
+            self::createLayersFromFormat($layers)
         );
 
         return $map;
     }
 
     /**
-     * @param array<\stdClass> $layersObjects
+     * @param array<object{name:string,markers:array<\stdClass>}> $layersObjects
      * @return array<Layer>
     */
     private static function createLayersFromFormat(array $layersObjects): array
@@ -97,6 +99,7 @@ class MapFactory
     {
         $markers = [];
 
+        /** @var object{point:array<int>,description:string,color:string} $markerObject */
         foreach ($markersObjects as $markerObject) {
             $markers[] = new Marker(
                 new Point($markerObject->point[0], $markerObject->point[1]),

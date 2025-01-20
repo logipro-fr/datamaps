@@ -22,7 +22,7 @@ class SearchMapsControllerSymfonyTest extends TestCase
         $response = $controller->searchMaps(2);
         $this->assertNotFalse($response->getContent());
 
-        /** @var \stdClass $responseObject */
+        /** @var object{success:bool,data:object{maps:array<\stdClass>}} $responseObject */
         $responseObject = json_decode($response->getContent());
 
         $this->assertTrue($responseObject->success);
