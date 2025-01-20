@@ -27,6 +27,7 @@ class SearchMapsServiceTest extends AbstractServiceTestCase
     {
         $this->service->execute(new SearchMapsRequest());
 
+        /** @var array<object{mapId:string}> $maps */
         $maps = $this->getDataFromSuccessfulResponse()->maps;
         $this->assertCount(1, $maps);
         $this->assertEquals("third", $maps[0]->mapId);
@@ -36,6 +37,7 @@ class SearchMapsServiceTest extends AbstractServiceTestCase
     {
         $this->service->execute(new SearchMapsRequest(2));
 
+        /** @var array<object{mapId:string}> $maps */
         $maps = $this->getDataFromSuccessfulResponse()->maps;
         $this->assertCount(2, $maps);
         $this->assertEquals("third", $maps[0]->mapId);
@@ -46,6 +48,7 @@ class SearchMapsServiceTest extends AbstractServiceTestCase
     {
         $this->service->execute(new SearchMapsRequest(5));
 
+        /** @var array<object{mapId:string}> $maps */
         $maps = $this->getDataFromSuccessfulResponse()->maps;
         $this->assertCount(3, $maps);
         $this->assertEquals("third", $maps[0]->mapId);

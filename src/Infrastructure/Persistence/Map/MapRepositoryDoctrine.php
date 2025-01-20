@@ -8,7 +8,7 @@ use Datamaps\Domain\Model\Map\MapRepositoryInterface;
 use Datamaps\Domain\Model\Map\Traits\AddMapTrait;
 use Datamaps\Domain\Model\Map\Traits\FindMapTrait;
 use Datamaps\Domain\Model\Map\Traits\SearchMapsTrait;
-use Datamaps\Infrastructure\Persistence\Doctrine\DoctrineFacade;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
@@ -21,12 +21,8 @@ class MapRepositoryDoctrine extends EntityRepository implements MapRepositoryInt
     use FindMapTrait;
     use SearchMapsTrait;
 
-    public function __construct()
+    public function __construct(EntityManagerInterface $em)
     {
-        $df = new DoctrineFacade();
-        $em = $df->getEntityManager();
-        $df->createDatabaseIfNeeded();
-
         /** @var ClassMetadata<Map> */
         $class = $em->getClassMetadata(Map::class);
         parent::__construct($em, $class);

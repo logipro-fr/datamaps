@@ -24,15 +24,18 @@ class MapFormat
         $this->validateData($data);
 
         if (property_exists($data, "mapId")) {
+            /** @var \stdClass&object{mapId:string} $data */
             $mapId = new MapId($data->mapId);
         } else {
             $mapId = new MapId();
         }
         if (property_exists($data, "layers")) {
+            /** @var \stdClass&object{layers:array<\stdClass>} $data */
             $layers = $data->layers;
         } else {
             $layers = [];
         }
+        /** @var \stdClass&object{bounds:array<array<float>>} $data */
         $this->mapId = $mapId;
         $this->bounds = $data->bounds;
         $this->layers = $layers;
@@ -66,8 +69,12 @@ class MapFormat
 
     private function getErrorMessage(ValidationResult $result): string
     {
-        /** @var ValidationError $error */
+        /** @var ?ValidationError $error */
         $error = $result->error();
+        if (is_null($error)) {
+            return "";
+        }
+        /** @var array<string,string> */
         $format = ((new ErrorFormatter())->format($error));
         return array_key_first($format) . ': ' . array_values($format)[0][0];
     }

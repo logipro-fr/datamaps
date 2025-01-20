@@ -10,7 +10,6 @@ class MapIdTest extends TestCase
     public function testCreateMapId(): void
     {
         $mapId = new MapId();
-        $this->assertIsString($mapId->getId());
         $this->assertStringStartsWith(MapId::PREFIX_NAME, $mapId->getId());
         $this->assertTrue(strlen(MapId::PREFIX_NAME) < strlen($mapId->getId()));
         $this->assertTrue(strlen($mapId) <= MapId::MAX_SIZE);

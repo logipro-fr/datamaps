@@ -3,3 +3,4 @@
 /.phpunit.cache/
 log/*
 !log/.gitignore
+.env.local
